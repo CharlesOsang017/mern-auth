@@ -20,12 +20,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
-import { Eye } from "lucide-react";
+import { Link, useNavigate } from "react-router";
+import { Eye, Loader } from "lucide-react";
+import { useLoginMutation } from "@/hooks/use-auth";
+import { toast } from "sonner";
+import { useAuth } from "@/provider/auth-context";
 
 export type SignInFormData = z.infer<typeof signInSchema>;
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -34,8 +38,23 @@ const SignIn = () => {
     },
   });
 
-  const handleOnSubmit = (data: SignInFormData) => {
-    console.log(data);
+  const { mutate, isPending } = useLoginMutation();
+  const {login} = useAuth()
+
+  const handleOnSubmit = (values: SignInFormData) => {
+    mutate(values, {
+      onSuccess: (data) => {
+        login(data);
+        toast.success("Logged in successfully");        
+        form.reset();
+        navigate("/profile");
+      },
+      onError: (error: any) => {
+        const errorMessage =
+          error?.response?.data?.message || "something went wrong";
+        toast.error(errorMessage);
+      },
+    });
   };
   return (
     <div className='min-h-screen flex flex-col justify-center items-center bg-muted/40 p-4'>
@@ -73,7 +92,12 @@ const SignIn = () => {
                   <FormItem>
                     <div className='flex items-center justify-between'>
                       <FormLabel>Password</FormLabel>
-                      <Link to='/forgot-password' className="text-sm text-blue-700">Forgot password?</Link>
+                      <Link
+                        to='/forgot-password'
+                        className='text-sm text-blue-700'
+                      >
+                        Forgot password?
+                      </Link>
                     </div>
                     <FormControl>
                       <Input
@@ -86,7 +110,9 @@ const SignIn = () => {
                   </FormItem>
                 )}
               />
-              <Button className='w-full cursor-pointer'>Sign In</Button>
+              <Button disabled={isPending} className='w-full cursor-pointer'>
+                {isPending ? <Loader className='mr-2 animate-spin' /> : "Sign In"}
+              </Button>
             </form>
           </Form>
         </CardContent>
