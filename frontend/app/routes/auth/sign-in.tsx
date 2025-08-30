@@ -71,7 +71,10 @@ const SignIn = () => {
                 name='password'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <div className='flex items-center justify-between'>
+                      <FormLabel>Password</FormLabel>
+                      <Link to='/forgot-password' className="text-sm text-blue-700">Forgot password?</Link>
+                    </div>
                     <FormControl>
                       <Input
                         type='password'
@@ -90,7 +93,7 @@ const SignIn = () => {
         <CardFooter>
           <p className='text-muted-foreground text-sm'>
             Don't have an account?{" "}
-            <Link to='/sign-up' className='text-primary underline'>
+            <Link to='/sign-up' className='text-blue-700 hover:underline'>
               Sign Up
             </Link>
           </p>
