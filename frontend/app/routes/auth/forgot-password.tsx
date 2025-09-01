@@ -61,7 +61,7 @@ const ForgotPassword = () => {
                 <CheckCircle className='w-10 h-10 text-green-500' />
                 <h1 className='text-xl font-bold'>Password reset email sent</h1>
                 <p className='text-muted-foreground'>
-                  Check your email spam folder for a link to reset your password
+                  Check your email for a link to reset your password
                 </p>
               </div>
             ) : (
