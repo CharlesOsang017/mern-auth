@@ -10,8 +10,7 @@ const AuthLayout = () => {
 
   if (isAuthenticated) {
     return <Navigate to='/profile' />;
-  }
-  
+  }  
   return <Outlet />;
 };
 

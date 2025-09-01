@@ -2,6 +2,7 @@ import type { User } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { queryClient } from "./react-query-provider";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 // import { publicRoutes } from "@/lib";
 
 interface AuthContextType {
@@ -65,6 +66,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     setIsAuthenticated(false);
     queryClient.clear();
+    toast.success("Logged out successfully");
   };
   const values = {
     user,

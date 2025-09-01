@@ -39,15 +39,15 @@ const SignIn = () => {
   });
 
   const { mutate, isPending } = useLoginMutation();
-  const {login} = useAuth()
+  const { login } = useAuth();
 
   const handleOnSubmit = (values: SignInFormData) => {
     mutate(values, {
       onSuccess: (data) => {
         login(data);
-        toast.success("Logged in successfully");        
+        toast.success("Logged in successfully");
         form.reset();
-        navigate("/profile");
+        // navigate("/");
       },
       onError: (error: any) => {
         const errorMessage =
@@ -111,7 +111,11 @@ const SignIn = () => {
                 )}
               />
               <Button disabled={isPending} className='w-full cursor-pointer'>
-                {isPending ? <Loader className='mr-2 animate-spin' /> : "Sign In"}
+                {isPending ? (
+                  <Loader className='mr-2 animate-spin' />
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </form>
           </Form>
