@@ -9,26 +9,27 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { resetPasswordMutation } from "@/hooks/use-auth";
 import { resetPasswordSchema } from "@/lib/schemas";
 // import { useResetPasswordMutation } from "@/hooks/use-auth";
 // import { resetPasswordSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, CheckCircle, Loader } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
-type resetPasswordForm = z.infer<typeof resetPasswordSchema>;
+export type resetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("tk");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-//   const { mutate: resetPassword, isPending } = useResetPasswordMutation();
-  const form = useForm<resetPasswordForm>({
+  const { mutate: resetPassword, isPending } = resetPasswordMutation();
+  const form = useForm<resetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       newPassword: "",
@@ -36,26 +37,26 @@ const ResetPassword = () => {
     },
   });
 
-  const isPending = false
 
-  const onSubmit = (values: resetPasswordForm) => {
-    // if(!token){
-    //   toast.error('Invalid token')
-    //   return
-    // }
-    // resetPassword(
-    //   { ...values, token: token as string },
-    //   {
-    //     onSuccess: () => {
-    //       setIsSuccess(true);
-    //     },
-    //     onError: (error: any) => {
-    //       const errorMessage = error?.response?.data?.message || "something went wrong";
-    //       toast.error(errorMessage);
-    //       console.log(error.message);
-    //     },
-    //   }
-    // );
+
+  const onSubmit = (values: resetPasswordFormData) => {
+    if(!token){
+      toast.error('Invalid token')
+      return
+    }
+    resetPassword(
+      { ...values, token: token as string },
+      {
+        onSuccess: () => {
+          setIsSuccess(true);
+        },
+        onError: (error: any) => {
+          const errorMessage = error?.response?.data?.message || "something went wrong";
+          toast.error(errorMessage);
+          console.log(error.message);
+        },
+      }
+    );
   };
   return (
     <div className='flex flex-col items-center justify-center h-screen'>
@@ -95,7 +96,7 @@ const ResetPassword = () => {
                         <FormLabel>New Password</FormLabel>
                         <FormControl>
                           <Input
-                            // type='password'
+                            type='password'
                             {...field}
                            
                           />
@@ -120,9 +121,9 @@ const ResetPassword = () => {
                       </FormItem>
                     )}
                   />
-                  <Button type='submit' className='w-full' disabled={isPending}>
+                  <Button type='submit' className='w-full cursor-pointer' disabled={isPending}>
                     {isPending ? (
-                      <Loader2 className='w-4 h-4 animate-spin' />
+                      <Loader className='w-4 h-4 animate-spin' />
                     ) : (
                       "Reset Password"
                     )}

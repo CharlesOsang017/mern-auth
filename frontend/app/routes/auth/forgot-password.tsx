@@ -9,28 +9,39 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { resetPasswordRequestMutation } from "@/hooks/use-auth";
 import { forgotPasswordSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, CheckCircle, Loader } from "lucide-react";
 import { useState } from "react";
-import {  useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router";
+import { toast } from "sonner";
 import z from "zod";
 
 export type forgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 const ForgotPassword = () => {
-    const [isSuccess, setIsSuccess] = useState(true);
+  const [isSuccess, setIsSuccess] = useState(false);
   const form = useForm<forgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
     },
   });
-
-  const isPending = true;
+  const { mutate, isPending } = resetPasswordRequestMutation();
   const onSubmit = async (data: forgotPasswordFormData) => {
-    console.log(data);
-  }
+    mutate(data, {
+      onSuccess: () => {
+        setIsSuccess(true);
+      },
+      onError: (error: any) => {
+        const errorMessage =
+          error?.response?.data?.message || "something went wrong";
+        toast.error(errorMessage);
+        console.log(error.message);
+      },
+    });
+  };
   return (
     <div className='h-screen flex items-center justify-center'>
       <div className='flex flex-col w-full max-w-md'>
@@ -48,9 +59,7 @@ const ForgotPassword = () => {
             {isSuccess ? (
               <div className='flex flex-col items-center justify-center'>
                 <CheckCircle className='w-10 h-10 text-green-500' />
-                <h1 className='text-xl font-bold'>
-                  Password reset email sent
-                </h1>
+                <h1 className='text-xl font-bold'>Password reset email sent</h1>
                 <p className='text-muted-foreground'>
                   Check your email for a link to reset your password
                 </p>
@@ -81,7 +90,7 @@ const ForgotPassword = () => {
                     />
                     <Button
                       type='submit'
-                      className='w-full'
+                      className='w-full cursor-pointer'
                       disabled={isPending}
                     >
                       {isPending ? (
