@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? ["https://chronos-lemon-five.vercel.app"] 
+  ? ["https://mern-auth-ten-theta.vercel.app"] 
   : ["http://localhost:5173"];
 
 
