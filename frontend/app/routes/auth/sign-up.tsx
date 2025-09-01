@@ -21,14 +21,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router";
-import { Eye, Loader } from "lucide-react";
-import { use } from "react";
+import { Eye, EyeOff, Loader } from "lucide-react";
 import { useRegisterMutation } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { useState } from "react";
 
 export type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const SignUp = () => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const navigate = useNavigate();
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
@@ -50,7 +53,8 @@ const SignUp = () => {
         navigate("/sign-in");
       },
       onError: (error: any) => {
-        const errorMessage = error?.response?.data?.message || "something went wrong";
+        const errorMessage =
+          error?.response?.data?.message || "something went wrong";
         toast.error(errorMessage);
         console.log(error.message);
       },
@@ -104,11 +108,30 @@ const SignUp = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type='password'
-                        placeholder='password'
-                        {...field}
-                      />
+                      <div className='relative'>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder='password'
+                          {...field}
+                        />
+                        {showPassword ? (
+                          <Eye
+                            className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer'
+                            size={20}
+                            onClick={() =>
+                              setShowPassword((prevState) => !prevState)
+                            }
+                          />
+                        ) : (
+                          <EyeOff
+                            onClick={() =>
+                              setShowPassword((prevState) => !prevState)
+                            }
+                            className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer'
+                            size={20}
+                          />
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -121,11 +144,30 @@ const SignUp = () => {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type='password'
-                        placeholder='password'
-                        {...field}
-                      />
+                      <div className='relative'>
+                        <Input
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder='password'
+                          {...field}
+                        />
+                        {showConfirmPassword ? (
+                          <Eye
+                            className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer'
+                            size={20}
+                            onClick={() =>
+                              setShowConfirmPassword((prevState) => !prevState)
+                            }
+                          />
+                        ) : (
+                          <EyeOff
+                            onClick={() =>
+                              setShowConfirmPassword((prevState) => !prevState)
+                            }
+                            className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer'
+                            size={20}
+                          />
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

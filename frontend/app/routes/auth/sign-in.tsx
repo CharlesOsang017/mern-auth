@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { signInSchema, signUpSchema } from "@/lib/schemas";
+import { signInSchema } from "@/lib/schemas";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,14 +21,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router";
-import { Eye, Loader } from "lucide-react";
+import { Eye, EyeOff, Loader } from "lucide-react";
 import { useLoginMutation } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { useAuth } from "@/provider/auth-context";
+import { useState } from "react";
 
 export type SignInFormData = z.infer<typeof signInSchema>;
 
 const SignIn = () => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -47,7 +49,6 @@ const SignIn = () => {
         login(data);
         toast.success("Logged in successfully");
         form.reset();
-        // navigate("/");
       },
       onError: (error: any) => {
         const errorMessage =
@@ -100,11 +101,30 @@ const SignIn = () => {
                       </Link>
                     </div>
                     <FormControl>
-                      <Input
-                        type='password'
-                        placeholder='password'
-                        {...field}
-                      />
+                      <div className='relative'>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder='password'
+                          {...field}
+                        />
+                        {showPassword ? (
+                          <Eye
+                            size={20}
+                            onClick={() =>
+                              setShowPassword((prevState) => !prevState)
+                            }
+                            className='absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer'
+                          />
+                        ) : (
+                          <EyeOff
+                            size={20}
+                            onClick={() =>
+                              setShowPassword((prevState) => !prevState)
+                            }
+                            className='absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer'
+                          />
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

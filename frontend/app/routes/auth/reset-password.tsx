@@ -11,8 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { resetPasswordMutation } from "@/hooks/use-auth";
 import { resetPasswordSchema } from "@/lib/schemas";
-// import { useResetPasswordMutation } from "@/hooks/use-auth";
-// import { resetPasswordSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, CheckCircle, Loader } from "lucide-react";
 import { useState } from "react";
